@@ -10,6 +10,7 @@ import sys, traceback
 # from utils import isFloat
 from datetime import datetime
 
+
 DEBUG = bool(os.getenv("DEBUG",None))
 
 # Read a html file to parse

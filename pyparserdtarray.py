@@ -28,7 +28,6 @@ def parseHTML(filename):
     with open(filename,'r') as f:
         html = f.read()
 
-
     if html:
         print("INFO: Opened fie: ", filename)
 
@@ -40,6 +39,7 @@ def parseHTML(filename):
         # date_time_values = re.findall(pattern, html, re.MULTILINE)
     
         urls_and_headers = re.findall(regex, html, re.MULTILINE)
+        # print("looking for dates")
 
         for url, header in urls_and_headers:
             # Extract dates and times from the header data
@@ -48,12 +48,15 @@ def parseHTML(filename):
                 date, time, timezone = date_and_time.groups()
         else:
             date, time, timezone = None, None, None
+        # print("we might have found dates!")
     
+  
         # Check if header matches any of the keywords
         if any(keyword in header for keyword in keywords_list):
+       
         # Add the URL, header, date, and time to the results array
             results.append({'url': url, 'header': header, 'date': date, 'time': time})
-
+        
         # Print the results array
         print(results)
 
@@ -104,9 +107,6 @@ def parseHTML(filename):
     #             print('Date:', date)
     #             print('Time:', time)      
         
-  
-
-# wget https://techcrunch.com
 if __name__ == "__main__":
     
     # Build CLI arguments
