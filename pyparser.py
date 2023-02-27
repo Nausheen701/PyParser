@@ -3,59 +3,32 @@
 # python3 pyparser.py -f index.html
 
 import re
-    # regex
 import time
-    # lets you work with time in python
 import os
-    # lets you run a command in python script, needs to be imported in every single python doc
 import json, glob, argparse
-    # lets you convert json to python
 import sys, traceback
-
 # from utils import isFloat
 from datetime import datetime
 
 DEBUG = bool(os.getenv("DEBUG",None))
 
-
 # Read a html file to parse
 def parseHTML(filename):
     regex = r'<a\s+href="([^"]+)"\sclass="post-block__title__link">\s(.+)\s</a>'
-    pattern = r'<time\s+class="river-byline__full-date-time"\s+datetime="([^"]+)"\s*>([^<]+)<span\s+class="full-date-time__separator">\s+at\s+</span>([^<]+)</time>'
-    keywords_list = ['Raises', 'Raise', 'Seed', 'Series A', 'Series B', 'Series C', 'Stealth']
+
     html = None
 
     with open(filename,'r') as f:
         html = f.read()
-          
-    # matching_keywords = [keyword for keyword in keywords_list if keyword in input_string]
-    # matching_keywords = [keyword for keyword in keywords_list if keyword in match[2]]
 
     if html:
         print("INFO: Opened fie: ", filename)
 
-        # matches = re.finditer(regex, html, re.MULTILINE)
-        url_match = re.search(regex, html, re.MULTILINE)
-        time_match = re.search(pattern, html, re.MULTILINE)
+        matches = re.finditer(regex, html, re.MULTILINE)
         
-        # for match in matches:
-        #         print("URL:", match[1].strip())
-        #         print("Header:", match[2].strip())
-        #         print("Date:", match[3])
-        #         print("Time:", match[4])
-               
-        if url_match and time_match:
-            url = url_match.group(1)
-            header = url_match.group(2)
-            date = time_match.group(2)
-            time = time_match.group(3)
-    
-         # Check if the header matches any of the keywords
-            if any(keyword in header for keyword in keywords_list):
-                print('URL:', url)
-                print('Header:', header)
-                print('Date:', date)
-                print('Time:', time)      
+        for match in matches:
+            print("URL:", match[1].strip())
+            print("Header:", match[2].strip())
         
     else:
         print("ERROR: Could not open %s" % filename)
