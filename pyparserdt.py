@@ -43,7 +43,8 @@ def parseHTML(filename):
         #         print("Header:", match[2].strip())
         #         print("Date:", match[3])
         #         print("Time:", match[4])
-               
+
+        # if url_match:          
         if url_match and time_match:
             url = url_match.group(1)
             header = url_match.group(2)

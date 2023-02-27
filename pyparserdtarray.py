@@ -26,11 +26,8 @@ def parseHTML(filename):
    
    # Open the file to extract data from
     with open(filename,'r') as f:
-        # html = f.read()
         html = f.read()
-          
-    # matching_keywords = [keyword for keyword in keywords_list if keyword in input_string]
-    # matching_keywords = [keyword for keyword in keywords_list if keyword in match[2]]
+
 
     if html:
         print("INFO: Opened fie: ", filename)
@@ -57,8 +54,12 @@ def parseHTML(filename):
         # Add the URL, header, date, and time to the results array
             results.append({'url': url, 'header': header, 'date': date, 'time': time})
 
-    # Print the results array
-    print(results)
+        # Print the results array
+        print(results)
+
+    else:
+        print("ERROR: Could not open %s" % filename)
+        return None
 #  ----------------------------------  
     # headers = []
     # for url, header in urls:
@@ -84,11 +85,6 @@ def parseHTML(filename):
     #     print(header)
 #  --------------------------------------
 
-
-
-
-
-
     #     # for match in matches:
     #     #         print("URL:", match[1].strip())
     #     #         print("Header:", match[2].strip())
@@ -108,9 +104,7 @@ def parseHTML(filename):
     #             print('Date:', date)
     #             print('Time:', time)      
         
-    # else:
-    #     print("ERROR: Could not open %s" % filename)
-    #     return None
+  
 
 # wget https://techcrunch.com
 if __name__ == "__main__":
