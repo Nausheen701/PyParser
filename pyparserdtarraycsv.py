@@ -1,6 +1,6 @@
 # License: LICENSE
 # Usage: wget https://techcrunch.com
-# python3 pyparser.py -f index.html
+# python3 pyparserdtarraycsv.py -f index.html
 
 import re
 import csv
@@ -16,8 +16,9 @@ DEBUG = bool(os.getenv("DEBUG",None))
 # Read a html file to parse
 def parseHTML(filename):
     
-    url_pattern = r'<a\s+href="([^"]+)"\sclass="post-block__title__link">\s(.+)\s</a>'
-    date_pattern = r'<time\s+class="river-byline__full-date-time"\s+datetime="([^"]+)"\s*>([^<]+)<span\s+class="full-date-time__separator">\s+at\s+</span>([^<]+)</time>'
+    url_pattern = r'<a\s+href="([^"]+)"\sclass="post-block__title__link"> \s(.+)\s</a>'
+    # date_pattern = r'<time\s+class="river-byline__full-date-time"\s+datetime="([^"]+)"\s*>([^<]+)<span\s+class="full-date-time__separator">\s+at\s+</span>([^<]+)</time>'
+    date_pattern = r'<time\s+class="river-byline__full-date-time">\s+datetime="([^"]+)</time>'
 
     html = None
 
@@ -32,7 +33,7 @@ def parseHTML(filename):
         writer = csv.writer(csv_file)
     
     # Write the header row
-        writer.writerow(['URL', 'Header', 'Date', 'Time'])
+        writer.writerow(['Header','URL', 'Date', 'Time'])
 
     with open(filename, mode='r') as f:
         html = f.read()
@@ -46,6 +47,9 @@ def parseHTML(filename):
         
         # Find all matches for the date/time pattern
         date_matches = re.findall(date_pattern, html)
+
+        # print(url_matches)
+        print(date_matches)
 
          # Iterate over the URL matches
         for url_match in url_matches:
