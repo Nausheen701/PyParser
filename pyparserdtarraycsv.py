@@ -13,12 +13,16 @@ from datetime import datetime
 
 DEBUG = bool(os.getenv("DEBUG",None))
 
+
+
 # Read a html file to parse
 def parseHTML(filename):
     
-    url_pattern = r'<a\s+href="([^"]+)"\sclass="post-block__title__link"> \s(.+)\s</a>'
+    url_pattern = r'<a\s+href="([^"]+)"\sclass="post-block__title__link">\s(.+)\s</a>'
     # date_pattern = r'<time\s+class="river-byline__full-date-time"\s+datetime="([^"]+)"\s*>([^<]+)<span\s+class="full-date-time__separator">\s+at\s+</span>([^<]+)</time>'
-    date_pattern = r'<time\s+class="river-byline__full-date-time">\s+datetime="([^"]+)</time>'
+    # date_pattern = r'<time\s+class="river-byline__full-date-time">\s+datetime="([^"]'
+    # date_pattern = r'<time class="river-byline__full-date-time" datetime="([:\w-]+)">'
+    date_pattern = r'<time class="river-byline__time" datetime="([:\w-]+)">'
 
     html = None
 
@@ -33,48 +37,90 @@ def parseHTML(filename):
         writer = csv.writer(csv_file)
     
     # Write the header row
-        writer.writerow(['Header','URL', 'Date', 'Time'])
+        writer.writerow(['Header','URL', 'Datetime'])
 
-    with open(filename, mode='r') as f:
-        html = f.read()
+        with open(filename, mode='r') as f:
+            html = f.read()
 
-    if html:
+        if html:
 
-        print("INFO: Opened fie: ", filename)
+            print("INFO: Opened fie: ", filename)
 
-        # Find all matches for the URL pattern
-        url_matches = re.findall(url_pattern, html)
-        
-        # Find all matches for the date/time pattern
-        date_matches = re.findall(date_pattern, html)
+            url_match_pattern = re.compile(url_pattern)
 
-        # print(url_matches)
-        print(date_matches)
-
-         # Iterate over the URL matches
-        for url_match in url_matches:
-            # Get the URL and header from the match
-            url, header = url_match
+            # Find all matches for the URL pattern
+            url_matches = re.finditer(url_match_pattern, html)
             
-            # Iterate over the date/time matches
-            for date_match in date_matches:
-                # Get the date and time from the match
-                date, time, _ = date_match
+            # Find all matches for the date/time pattern
+            # date_matches = re.findall(date_pattern, html)
+
+            # print(url_matches)
+            # print(date_matches)
+
+            # print(len(url_matches))
+
+            # Iterate over the URL matches
+            for url_match in url_matches:
+                # Get the URL and header from the match
+                # url, header = url_match
                 
-                # Check if the header contains any of the keywords
-                if any(keyword in header for keyword in keywords_list):
-                    # Add the header to the matching headers array
-                    matching_headers.append(header)
-                    
-                    # Write the URL, header, date, and time to the CSV file
-                    writer.writerow([url, header, date, time])
+                url = url_match[1].strip()
+                header = url_match[2].strip()
+
+                print(url, header)
+
+                # find date associated with the url_match
+
+                # Iterate over the date/time matches
+                # for date_match in date_matches:
+                #     # Get the date and time from the match
+                #     date, time, _ = date_match
+
+                # match function has a start and end point
+                # will return starting position of that pattern
+                # position = html.find(date_pattern, url_match.end())
+
+                print(url_match.end())
+                # if position >0: 
+                pattern = re.compile(date_pattern)
+
+                date_match = pattern.search(html, url_match.end())
+
+                date_str = date_match[1].strip()
+            
+                print(url, header, date_str)
+            
         
-        # Print the matching headers array
-        print(matching_headers)
+                # else:
+                #     print("Could not find date.")
+                
+                    # Check if the header contains any of the keywords
+
+                for item in keywords_list :
+
+                    if item.lower() in header.lower() :
+                        matching_headers.append(header)
+                        writer.writerow([url, header, date_str]) 
+                        break
+
+                # copies to google sheets
+
+
+                # if any(keyword in header for keyword in keywords_list):
+                #         # Add the header to the matching headers array
+                #         matching_headers.append(header)
+                        
+                #         # Write the URL, header, date, and time to the CSV file
+                #         writer.writerow([url, header, date_match])
+            
+            # Print the matching headers array
         
-    else:
-        print("ERROR: Could not open %s" % filename)
-        return None
+            print(matching_headers)
+
+            
+        else:
+            print("ERROR: Could not open %s" % filename)
+            return None
 
 # wget https://techcrunch.com
 if __name__ == "__main__":
